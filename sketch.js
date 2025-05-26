@@ -1,9 +1,17 @@
+let video;
+
 function setup() {
   createCanvas(400, 400);
+  video = createCapture(VIDEO);
+  video.size(400, 400);
+  video.hide(); // 隱藏預設的 video 元素
 }
 
 function draw() {
   background(220);
+
+  // 顯示攝影機畫面
+  image(video, 0, 0, width, height);
 
   // 假設這個變數由手勢辨識模型給出
   let handSign = "scissors"; // 可改為 "rock" 或 "paper"
@@ -30,3 +38,4 @@ function draw() {
     ellipse(faceCenterX, faceCenterY, 40, 40);
   }
 }
+
