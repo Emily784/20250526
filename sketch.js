@@ -47,10 +47,7 @@ function detectGesture(results) {
 }
 
 function draw() {
-  // 左右翻轉攝影機畫面
-  push();
-  translate(width, 0);
-  scale(-1, 1);
+  // 不做左右翻轉
   image(video, 0, 0, width, height);
 
   if (facePredictions.length > 0) {
@@ -67,15 +64,13 @@ function draw() {
     }
 
     if (idx !== null) {
-      // x 座標也要左右翻轉
       const [x, y] = keypoints[idx];
-      const flippedX = width - x;
       noFill();
       stroke(255, 0, 0);
       strokeWeight(4);
-      ellipse(flippedX, y, 100, 100);
+      ellipse(x, y, 100, 100);
     }
   }
-  pop();
 }
+
 
