@@ -58,9 +58,9 @@ function draw() {
     if (gesture === "scissors") {
       idx = 234; // 左臉頰
     } else if (gesture === "rock") {
-      idx = 1; // 鼻子
+      idx = 4; // 鼻子
     } else if (gesture === "paper") {
-      idx = 152; // 下巴
+      idx = 10; // 額頭中央
     }
 
     if (idx !== null) {
@@ -72,5 +72,3 @@ function draw() {
     }
   }
 }
-
-
