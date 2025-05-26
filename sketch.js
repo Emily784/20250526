@@ -47,7 +47,10 @@ function detectGesture(results) {
 }
 
 function draw() {
-  // 不做左右翻轉
+  // 左右翻轉攝影機畫面
+  push();
+  translate(width, 0);
+  scale(-1, 1);
   image(video, 0, 0, width, height);
 
   if (facePredictions.length > 0) {
@@ -58,17 +61,19 @@ function draw() {
     if (gesture === "scissors") {
       idx = 234; // 左臉頰
     } else if (gesture === "rock") {
-      idx = 4; // 鼻子
+      idx = 454; // 右臉頰
     } else if (gesture === "paper") {
       idx = 10; // 額頭中央
     }
 
     if (idx !== null) {
       const [x, y] = keypoints[idx];
+      const flippedX = width - x; // x 座標左右翻轉
       noFill();
       stroke(255, 0, 0);
       strokeWeight(4);
-      ellipse(x, y, 100, 100);
+      ellipse(flippedX, y, 100, 100);
     }
   }
+  pop();
 }
