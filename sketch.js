@@ -59,9 +59,9 @@ function draw() {
 
     // 根據手勢決定圓圈位置
     if (gesture === "scissors") {
-      idx = 234; 
+      idx = 234; // 左臉頰
     } else if (gesture === "rock") {
-      idx = 454;
+      idx = 1; // 鼻子
     } else if (gesture === "paper") {
       idx = 10; // 額頭中央
     }
