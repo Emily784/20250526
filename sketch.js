@@ -59,9 +59,9 @@ function draw() {
 
     // 根據手勢決定圓圈位置
     if (gesture === "scissors") {
-      idx = 234; // 左臉頰
+      idx = 234; 
     } else if (gesture === "rock") {
-      idx = 454; // 右臉頰
+      idx = 454;
     } else if (gesture === "paper") {
       idx = 10; // 額頭中央
     }
@@ -72,7 +72,7 @@ function draw() {
       noFill();
       stroke(255, 0, 0);
       strokeWeight(4);
-      ellipse(flippedX, y, 100, 100);
+      ellipse(flippedX, y, 50, 50);
     }
   }
   pop();
