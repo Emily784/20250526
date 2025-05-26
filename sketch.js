@@ -1,47 +1,74 @@
 let video;
 let facemesh;
-let predictions = [];
+let handpose;
+let facePredictions = [];
+let handPredictions = [];
+let gesture = ""; // "scissors", "rock", "paper"
 
 function setup() {
-  // 建立640x480畫布並置中
-  let cnv = createCanvas(640, 480);
-  cnv.style('display', 'block');
-  cnv.parent(document.body);
-  cnv.position((windowWidth - width) / 2, (windowHeight - height) / 2);
-
+  createCanvas(640, 480).position(
+    (windowWidth - 640) / 2,
+    (windowHeight - 480) / 2
+  );
   video = createCapture(VIDEO);
   video.size(width, height);
   video.hide();
 
-  // 載入facemesh模型
-  facemesh = ml5.facemesh(video, modelReady);
-  facemesh.on('predict', gotResults);
+  facemesh = ml5.facemesh(video, () => {});
+  facemesh.on('predict', results => {
+    facePredictions = results;
+  });
+
+  handpose = ml5.handpose(video, () => {});
+  handpose.on('predict', results => {
+    handPredictions = results;
+    gesture = detectGesture(results);
+  });
 }
 
-function modelReady() {
-  console.log('Facemesh model loaded!');
-}
+// 根據手指張開數量判斷手勢
+function detectGesture(results) {
+  if (results.length === 0) return "";
 
-function gotResults(results) {
-  predictions = results;
+  const annotations = results[0].annotations;
+  // 計算伸出的手指數量（大拇指不算）
+  let extended = 0;
+  const fingers = ['indexFinger', 'middleFinger', 'ringFinger', 'pinky'];
+  fingers.forEach(finger => {
+    const tip = annotations[finger][3];
+    const pip = annotations[finger][1];
+    if (tip[1] < pip[1]) extended++; // tip 在 pip 上方，表示伸出
+  });
+
+  if (extended === 2) return "scissors";
+  if (extended === 0) return "rock";
+  if (extended === 4) return "paper";
+  return "";
 }
 
 function draw() {
-  background(220);
   image(video, 0, 0, width, height);
 
-  // 畫出facemesh特徵點
-  drawKeypoints();
-}
+  if (facePredictions.length > 0) {
+    const keypoints = facePredictions[0].scaledMesh;
+    let idx = null;
 
-function drawKeypoints() {
-  for (let i = 0; i < predictions.length; i++) {
-    const keypoints = predictions[i].scaledMesh;
-    for (let j = 0; j < keypoints.length; j++) {
-      const [x, y] = keypoints[j];
-      fill(0, 255, 0);
-      noStroke();
-      ellipse(x, y, 3, 3);
+    // 根據手勢決定圓圈位置
+    if (gesture === "scissors") {
+      idx = 234; // 左臉頰
+    } else if (gesture === "rock") {
+      idx = 1; // 鼻子
+    } else if (gesture === "paper") {
+      idx = 152; // 下巴
+    }
+
+    if (idx !== null) {
+      const [x, y] = keypoints[idx];
+      noFill();
+      stroke(255, 0, 0);
+      strokeWeight(4);
+      ellipse(x, y, 100, 100);
     }
   }
 }
+
